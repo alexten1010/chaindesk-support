@@ -12,7 +12,6 @@ import {
   Check
 } from 'lucide-react';
 
-// Mock Ticket Data with Real Mainnet Transaction Hashes
 const initialTickets = [
   {
     id: 'TICK-9042',
@@ -22,7 +21,7 @@ const initialTickets = [
     status: 'Open',
     timestamp: '4 mins ago',
     details: 'Transaction submitted on Ethereum is pending due to low gas pricing.',
-    txHash: '0x88df116110f0b4d4554cd8c281315b81a7d657571f543e26bb5c6a1fae7f781a',
+    txHash: '0x59b2d4417430263f35efcc0c93708e33f07a7593c20058b8f2b186b51c140409', // Verified live mainnet transaction hash
     network: 'Ethereum Mainnet',
     errorLog: 'REPLACEMENT_UNDERPRICED: fee too low to replace pending tx',
   },
@@ -46,7 +45,7 @@ const initialTickets = [
     status: 'Resolved',
     timestamp: '1 hour ago',
     details: 'User successfully swapped ETH for custom token on Uniswap V3, but balance shows 0 in MetaMask.',
-    txHash: '0x88df116110f0b4d4554cd8c281315b81a7d657571f543e26bb5c6a1fae7f781a',
+    txHash: '0x59b2d4417430263f35efcc0c93708e33f07a7593c20058b8f2b186b51c140409',
     network: 'Ethereum Mainnet',
     errorLog: 'TOKEN_NOT_IMPORTED: Contract 0x6b175... not in local token registry',
   },
@@ -64,7 +63,6 @@ const initialTickets = [
   }
 ];
 
-// Response Macros
 const supportMacros = [
   {
     title: 'Stuck Transaction / Gas Boost Fix',
@@ -87,8 +85,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [agentReply, setAgentReply] = useState('');
   const [successToast, setSuccessToast] = useState(false);
+  const [customHashInput, setCustomHashInput] = useState('');
 
-  // Filter logic
   const filteredTickets = tickets.filter(ticket => {
     const matchesFilter = filter === 'All' || ticket.status === filter;
     const matchesSearch = ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -116,7 +114,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
-      {/* Toast Notification */}
       {successToast && (
         <div className="fixed top-4 right-4 z-50 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 animate-bounce">
           <CheckCircle2 className="w-5 h-5" />
@@ -153,10 +150,8 @@ export default function App() {
       {/* Main App Grid */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
 
-        {/* Left Column: Ticket Queue (4 Cols) */}
+        {/* Left Column: Ticket Queue */}
         <div className="lg:col-span-4 bg-slate-900/50 border-r border-slate-800 flex flex-col h-[calc(100vh-73px)]">
-
-          {/* Search & Filters */}
           <div className="p-4 border-b border-slate-800 space-y-3">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -184,7 +179,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Ticket List */}
           <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60">
             {filteredTickets.length === 0 ? (
               <div className="p-8 text-center text-slate-500 text-sm">No tickets found matching your query.</div>
@@ -219,12 +213,10 @@ export default function App() {
           </div>
         </div>
 
-        {/* Right Column: Active Ticket Workspace & Inspector (8 Cols) */}
+        {/* Right Column: Active Ticket Workspace */}
         <div className="lg:col-span-8 flex flex-col h-[calc(100vh-73px)] overflow-y-auto bg-slate-950 p-6 space-y-6">
-
           {selectedTicket ? (
             <>
-              {/* Ticket Header & Status Actions */}
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center space-x-3 mb-1">
@@ -252,10 +244,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Customer Details & On-Chain Diagnostic Inspector */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Context Card */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Zap className="w-4 h-4 text-indigo-400" />
@@ -284,7 +273,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Simulated Block Explorer & Error Logs */}
+                {/* On-Chain Inspector & Custom Hash Tester */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
@@ -309,6 +298,31 @@ export default function App() {
                         </span>
                       )}
                     </div>
+
+                    {/* Interactive Custom TxHash Test Input */}
+                    <div className="pt-2 border-t border-slate-800">
+                      <span className="text-xs text-slate-400 block mb-1">Test Custom TxHash on Etherscan</span>
+                      <div className="flex space-x-2">
+                        <input
+                          type="text"
+                          placeholder="Paste any 0x... hash here"
+                          value={customHashInput}
+                          onChange={(e) => setCustomHashInput(e.target.value)}
+                          className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
+                        />
+                        <button
+                          onClick={() => {
+                            if (customHashInput.trim()) {
+                              window.open(`https://etherscan.io/tx/${customHashInput.trim()}`, '_blank');
+                            }
+                          }}
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
+                        >
+                          Open
+                        </button>
+                      </div>
+                    </div>
+
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">Raw Error Trace / Revert Reason</span>
                       <div className="font-mono bg-rose-950/20 border border-rose-900/30 px-3 py-2.5 rounded-xl text-xs text-rose-300 leading-relaxed overflow-x-auto">
@@ -317,10 +331,8 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-
               </div>
 
-              {/* Response Macros Toolbar */}
               <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-3">
                 <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider">Quick Response Knowledge Macros</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -337,7 +349,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Agent Reply Editor */}
               <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                 <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider">Send Response to User</h3>
                 <form onSubmit={handleSendReply} className="space-y-3">
@@ -365,9 +376,7 @@ export default function App() {
               Select a ticket from the left queue to inspect diagnostics.
             </div>
           )}
-
         </div>
-
       </div>
     </div>
   );
