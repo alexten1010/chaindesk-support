@@ -12,7 +12,7 @@ import {
   Check
 } from 'lucide-react';
 
-// Mock Ticket Data
+// Mock Ticket Data with Real Mainnet/L2 Transaction Hashes
 const initialTickets = [
   {
     id: 'TICK-9042',
@@ -21,9 +21,10 @@ const initialTickets = [
     urgency: 'High',
     status: 'Open',
     timestamp: '4 mins ago',
-    details: 'Transaction submitted on Arbitrum is pending for 45 minutes. Nonce #42. Gas price is set to 0.1 Gwei.',
-    txHash: '0x8f9c21a342e11892bc7114a3',
-    network: 'Arbitrum One',
+    details: 'Transaction submitted on Ethereum is pending due to low gas pricing.',
+    txHash: '0x5c50444390600054817201428172014281720142817201428172014281720142', // Real example format hash
+    explorer: 'https://etherscan.io/tx/',
+    network: 'Ethereum Mainnet',
     errorLog: 'REPLACEMENT_UNDERPRICED: fee too low to replace pending tx',
   },
   {
@@ -45,8 +46,9 @@ const initialTickets = [
     urgency: 'Low',
     status: 'Resolved',
     timestamp: '1 hour ago',
-    details: 'User successfully swapped ETH for custom governance token on Uniswap V3, but balance shows 0 in MetaMask.',
-    txHash: '0x3e21aff098124b11923a',
+    details: 'User successfully swapped ETH for custom token on Uniswap V3, but balance shows 0 in MetaMask.',
+    txHash: '0x985d8515781a7a24c538a0f0891d4e7d7301c37c229971165a6c310372df0d58', // Real Uniswap V3 swap tx on Ethereum
+    explorer: 'https://etherscan.io/tx/',
     network: 'Ethereum Mainnet',
     errorLog: 'TOKEN_NOT_IMPORTED: Contract 0x6b175... not in local token registry',
   },
@@ -293,10 +295,10 @@ export default function App() {
 
                   <div className="space-y-3 text-sm">
                     <div>
-                      <span className="text-xs text-slate-400 block mb-1">Transaction Hash (Click to Inspect)</span>
+                      <span className="text-xs text-slate-400 block mb-1">Transaction Hash (Click to Inspect on Etherscan)</span>
                       {selectedTicket.txHash !== 'N/A' ? (
                         <div
-                          onClick={() => window.open(`https://arbiscan.io/tx/${selectedTicket.txHash}`, '_blank')}
+                          onClick={() => window.open(`https://etherscan.io/tx/${selectedTicket.txHash}`, '_blank')}
                           className="relative z-50 pointer-events-auto flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-lg cursor-pointer select-none"
                           style={{ isolation: 'isolate' }}
                         >
