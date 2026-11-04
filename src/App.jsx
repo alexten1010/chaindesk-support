@@ -296,13 +296,22 @@ export default function App() {
 
                   <div className="space-y-3 text-sm">
                     <div>
-                      <span className="text-xs text-slate-400 block mb-1">Transaction Hash</span>
-                      <div className="flex items-center justify-between font-mono bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-300">
-                        <span>{selectedTicket.txHash}</span>
-                        {selectedTicket.txHash !== 'N/A' && (
-                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 cursor-pointer hover:text-indigo-300" />
-                        )}
-                      </div>
+                      <span className="text-xs text-slate-400 block mb-1">Transaction Hash (Click to Inspect)</span>
+                      {selectedTicket.txHash !== 'N/A' ? (
+                        <a
+                          href={`https://arbiscan.io/tx/${selectedTicket.txHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500/60 px-3 py-1.5 rounded-lg text-xs text-indigo-300 transition-colors group"
+                        >
+                          <span className="truncate">{selectedTicket.txHash}</span>
+                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:text-indigo-200 ml-2 flex-shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="font-mono bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-500 block">
+                          N/A (Off-chain signature request)
+                        </span>
+                      )}
                     </div>
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">Raw Error Trace / Revert Reason</span>

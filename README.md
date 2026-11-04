@@ -1,17 +1,36 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+# ChainDesk Support Suite
 
-Currently, two official plugins are available:
+## Overview
+Built and deployed this technical support operations workspace to showcase a deep understanding of the Web3 support ecosystem, agent workflows, and customer issue triage. Designed to bridge the gap between technical operations and user success.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Live Demo: [chaindesk-web3-support.vercel.app](https://chaindesk-web3-support.vercel.app)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Key Features
 
-## Expanding the Oxlint configuration
+* **Interactive Ticket Queue:** Filter incoming customer requests by status (`Open`, `In Progress`, `Resolved`) and search instantly by ticket ID, wallet address, or issue category.
+* **On-Chain Diagnostics Inspector:** Review wallet metadata, target network routing, transaction hashes, and simulated error traces (e.g., revert reasons and gas underpriced exceptions).
+* **Tier-2 Escalation Logic:** Seamlessly escalate complex tickets from frontline support to senior engineering with visual status indicators.
+* **Operational Macros & Response Dispatcher:** Utilize pre-built knowledge base macros to quickly respond to common Web3 user errors like stuck transactions, incorrect chain states, and missing token imports.
+* **Live RPC Latency Monitoring:** Simulated network health check widget providing real-time response metrics for optimal routing.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
-# chaindesk-support
+---
+
+## Tech Stack
+
+* **Frontend:** React, Vite
+* **Styling:** Tailwind CSS (v4)
+* **Icons:** Lucide-React
+* **Deployment & Hosting:** Vercel (with custom SPA rewrite configuration)
+
+---
+
+## Getting Started Locally
+
+To run this project locally on your machine:
+
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/your-username/chaindesk-support.git](https://github.com/your-username/chaindesk-support.git)
