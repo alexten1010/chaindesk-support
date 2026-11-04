@@ -46,7 +46,7 @@ const initialTickets = [
     status: 'Resolved',
     timestamp: '1 hour ago',
     details: 'User successfully swapped ETH for custom token on Uniswap V3, but balance shows 0 in MetaMask.',
-    txHash: '0x5c50444390600054817201428172014281720142817201428172014281720142',
+    txHash: '0x88df116110f0b4d4554cd8c281315b81a7d657571f543e26bb5c6a1fae7f781a',
     network: 'Ethereum Mainnet',
     errorLog: 'TOKEN_NOT_IMPORTED: Contract 0x6b175... not in local token registry',
   },
