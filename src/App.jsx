@@ -21,7 +21,7 @@ const initialTickets = [
     status: 'Open',
     timestamp: '4 mins ago',
     details: 'Transaction submitted on Ethereum is pending due to low gas pricing.',
-    txHash: '0x59b2d4417430263f35efcc0c93708e33f07a7593c20058b8f2b186b51c140409',
+    txHash: '0x88df116110f0b4d4554cd8c281315b81a7d657571f543e26bb5c6a1fae7f781a',
     network: 'Ethereum Mainnet',
     errorLog: 'REPLACEMENT_UNDERPRICED: fee too low to replace pending tx',
   },
@@ -45,7 +45,7 @@ const initialTickets = [
     status: 'Resolved',
     timestamp: '1 hour ago',
     details: 'User successfully swapped ETH for custom token on Uniswap V3, but balance shows 0 in MetaMask.',
-    txHash: '0x59b2d4417430263f35efcc0c93708e33f07a7593c20058b8f2b186b51c140409',
+    txHash: '0x88df116110f0b4d4554cd8c281315b81a7d657571f543e26bb5c6a1fae7f781a',
     network: 'Ethereum Mainnet',
     errorLog: 'TOKEN_NOT_IMPORTED: Contract 0x6b175... not in local token registry',
   },
@@ -273,7 +273,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* On-Chain Inspector with Native Anchor Tags */}
+                {/* On-Chain Inspector with Controlled Button Submission */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
@@ -300,35 +300,29 @@ export default function App() {
                       )}
                     </div>
 
-                    {/* Native Anchor Link for Custom TxHash Tester */}
+                    {/* Controlled Custom TxHash Button Submission */}
                     <div className="pt-2 border-t border-slate-800">
-                      <span className="text-xs text-slate-400 block mb-1">Test Custom TxHash on Etherscan</span>
+                      <span className="text-xs text-slate-400 block mb-1">Test Custom Live TxHash on Etherscan</span>
                       <div className="flex space-x-2">
                         <input
                           type="text"
-                          placeholder="Paste any 0x... hash here"
+                          placeholder="Paste full 0x... hash here"
                           value={customHashInput}
                           onChange={(e) => setCustomHashInput(e.target.value)}
                           className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
                         />
-                        {customHashInput.trim() ? (
-                          <a
-                            href={`https://etherscan.io/tx/${customHashInput.trim()}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center space-x-1"
-                          >
-                            <span>Open</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        ) : (
-                          <button
-                            disabled
-                            className="bg-slate-800 text-slate-500 text-xs px-3 py-1.5 rounded-lg font-medium cursor-not-allowed"
-                          >
-                            Open
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (customHashInput.trim()) {
+                              window.open(`https://etherscan.io/tx/${customHashInput.trim()}`, '_blank');
+                            }
+                          }}
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center space-x-1 cursor-pointer"
+                        >
+                          <span>Open</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
                       </div>
                     </div>
 
