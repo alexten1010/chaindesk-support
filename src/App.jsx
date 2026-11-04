@@ -273,7 +273,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* On-Chain Inspector with Controlled Button Submission */}
+                {/* On-Chain Inspector with Isolated Custom Tester Box */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
@@ -300,16 +300,17 @@ export default function App() {
                       )}
                     </div>
 
-                    {/* Controlled Custom TxHash Button Submission */}
-                    <div className="pt-2 border-t border-slate-800">
-                      <span className="text-xs text-slate-400 block mb-1">Test Custom Live TxHash on Etherscan</span>
+                    {/* Dedicated & Isolated Custom TxHash Testing Box */}
+                    <div className="pt-3 mt-3 border-t border-slate-800 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                      <span className="text-xs font-semibold text-indigo-400 block mb-1">Test Any Live Transaction Hash</span>
+                      <p className="text-[10px] text-slate-400 mb-2">Paste a valid 0x... hash here and click Open:</p>
                       <div className="flex space-x-2">
                         <input
                           type="text"
-                          placeholder="Paste full 0x... hash here"
+                          placeholder="Paste 0x... hash here"
                           value={customHashInput}
                           onChange={(e) => setCustomHashInput(e.target.value)}
-                          className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
+                          className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                         />
                         <button
                           type="button"
@@ -318,7 +319,7 @@ export default function App() {
                               window.open(`https://etherscan.io/tx/${customHashInput.trim()}`, '_blank');
                             }
                           }}
-                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center space-x-1 cursor-pointer"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 cursor-pointer flex-shrink-0 shadow-md"
                         >
                           <span>Open</span>
                           <ExternalLink className="w-3 h-3" />
