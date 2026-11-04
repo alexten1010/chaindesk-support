@@ -21,7 +21,7 @@ const initialTickets = [
     status: 'Open',
     timestamp: '4 mins ago',
     details: 'Transaction submitted on Ethereum is pending due to low gas pricing.',
-    txHash: '0x59b2d4417430263f35efcc0c93708e33f07a7593c20058b8f2b186b51c140409', // Verified live mainnet transaction hash
+    txHash: '0x59b2d4417430263f35efcc0c93708e33f07a7593c20058b8f2b186b51c140409',
     network: 'Ethereum Mainnet',
     errorLog: 'REPLACEMENT_UNDERPRICED: fee too low to replace pending tx',
   },
@@ -273,7 +273,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* On-Chain Inspector & Custom Hash Tester */}
+                {/* On-Chain Inspector with Native Anchor Tags */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
@@ -284,14 +284,15 @@ export default function App() {
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">Transaction Hash (Click to Inspect on Etherscan)</span>
                       {selectedTicket.txHash !== 'N/A' ? (
-                        <div
-                          onClick={() => window.open(`https://etherscan.io/tx/${selectedTicket.txHash}`, '_blank')}
-                          className="relative z-50 pointer-events-auto flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-lg cursor-pointer select-none"
-                          style={{ isolation: 'isolate' }}
+                        <a
+                          href={`https://etherscan.io/tx/${selectedTicket.txHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-lg cursor-pointer"
                         >
                           <span className="truncate underline underline-offset-2 decoration-indigo-500/40">{selectedTicket.txHash}</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform ml-2 flex-shrink-0 pointer-events-none" />
-                        </div>
+                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform ml-2 flex-shrink-0" />
+                        </a>
                       ) : (
                         <span className="font-mono bg-slate-950 border border-slate-800 px-3 py-2 rounded-lg text-xs text-slate-500 block">
                           N/A (Off-chain signature request)
@@ -299,7 +300,7 @@ export default function App() {
                       )}
                     </div>
 
-                    {/* Interactive Custom TxHash Test Input */}
+                    {/* Native Anchor Link for Custom TxHash Tester */}
                     <div className="pt-2 border-t border-slate-800">
                       <span className="text-xs text-slate-400 block mb-1">Test Custom TxHash on Etherscan</span>
                       <div className="flex space-x-2">
@@ -310,16 +311,24 @@ export default function App() {
                           onChange={(e) => setCustomHashInput(e.target.value)}
                           className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
                         />
-                        <button
-                          onClick={() => {
-                            if (customHashInput.trim()) {
-                              window.open(`https://etherscan.io/tx/${customHashInput.trim()}`, '_blank');
-                            }
-                          }}
-                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
-                        >
-                          Open
-                        </button>
+                        {customHashInput.trim() ? (
+                          <a
+                            href={`https://etherscan.io/tx/${customHashInput.trim()}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center space-x-1"
+                          >
+                            <span>Open</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        ) : (
+                          <button
+                            disabled
+                            className="bg-slate-800 text-slate-500 text-xs px-3 py-1.5 rounded-lg font-medium cursor-not-allowed"
+                          >
+                            Open
+                          </button>
+                        )}
                       </div>
                     </div>
 
