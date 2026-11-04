@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Headphones,
-  AlertCircle,
   CheckCircle2,
   Clock,
   Search,
@@ -296,15 +295,14 @@ export default function App() {
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">Transaction Hash (Click to Inspect)</span>
                       {selectedTicket.txHash !== 'N/A' ? (
-                        <a
-                          href={`https://arbiscan.io/tx/${selectedTicket.txHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="relative z-20 pointer-events-auto flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-md cursor-pointer"
+                        <div
+                          onClick={() => window.open(`https://arbiscan.io/tx/${selectedTicket.txHash}`, '_blank')}
+                          className="relative z-50 pointer-events-auto flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-lg cursor-pointer select-none"
+                          style={{ isolation: 'isolate' }}
                         >
                           <span className="truncate underline underline-offset-2 decoration-indigo-500/40">{selectedTicket.txHash}</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform ml-2 flex-shrink-0" />
-                        </a>
+                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform ml-2 flex-shrink-0 pointer-events-none" />
+                        </div>
                       ) : (
                         <span className="font-mono bg-slate-950 border border-slate-800 px-3 py-2 rounded-lg text-xs text-slate-500 block">
                           N/A (Off-chain signature request)
