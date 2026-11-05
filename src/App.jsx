@@ -9,7 +9,8 @@ import {
   Terminal,
   Zap,
   UserCheck,
-  Check
+  Check,
+  Globe
 } from 'lucide-react';
 
 const initialTickets = [
@@ -34,7 +35,7 @@ const initialTickets = [
     timestamp: '18 mins ago',
     details: 'User trying to claim staking rewards on Base, but wallet is connected to Ethereum Mainnet.',
     txHash: 'N/A',
-    network: 'Ethereum Mainnet (Expected: Base)',
+    network: 'Base',
     errorLog: 'CHAIN_MISMATCH: Expected chain ID 8453, received 1',
   },
   {
@@ -85,11 +86,19 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [agentReply, setAgentReply] = useState('');
   const [successToast, setSuccessToast] = useState(false);
-  const [customHashInput, setCustomHashInput] = useState('');
 
+  // Custom states for live inspector testing & network override
+  const [customHashInput, setCustomHashInput] = useState('');
+  const [selectedNetwork, setSelectedNetwork] = useState(selectedTicket?.network || 'Ethereum Mainnet');
   const [editableErrorLogs, setEditableErrorLogs] = useState(
     initialTickets.reduce((acc, t) => ({ ...acc, [t.id]: t.errorLog }), {})
   );
+
+  // Sync network state when user selects a different ticket
+  const handleSelectTicket = (ticket) => {
+    setSelectedTicket(ticket);
+    setSelectedNetwork(ticket.network);
+  };
 
   const filteredTickets = tickets.filter(ticket => {
     const matchesFilter = filter === 'All' || ticket.status === filter;
@@ -116,8 +125,12 @@ export default function App() {
     setTimeout(() => setSuccessToast(false), 3000);
   };
 
-  const handleEditorChange = (ticketId, value) => {
-    setEditableErrorLogs(prev => ({ ...prev, [ticketId]: value }));
+  const getExplorerUrl = (networkName, hash) => {
+    const net = networkName.toLowerCase();
+    if (net.includes('arbitrum')) return `https://arbiscan.io/tx/${hash}`;
+    if (net.includes('polygon')) return `https://polygonscan.com/tx/${hash}`;
+    if (net.includes('base')) return `https://basescan.org/tx/${hash}`;
+    return `https://etherscan.io/tx/${hash}`;
   };
 
   return (
@@ -194,7 +207,7 @@ export default function App() {
               filteredTickets.map((ticket) => (
                 <div
                   key={ticket.id}
-                  onClick={() => setSelectedTicket(ticket)}
+                  onClick={() => handleSelectTicket(ticket)}
                   className={`p-4 cursor-pointer transition-all hover:bg-slate-800/50 ${selectedTicket?.id === ticket.id ? 'bg-indigo-950/30 border-l-4 border-indigo-500' : ''
                     }`}
                 >
@@ -266,12 +279,25 @@ export default function App() {
                         {selectedTicket.user}
                       </span>
                     </div>
+
+                    {/* Interactive Network / Chain Selector */}
                     <div>
-                      <span className="text-xs text-slate-400 block mb-1">Target Network / Chain</span>
-                      <span className="text-slate-200 font-medium bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg block">
-                        {selectedTicket.network}
+                      <span className="text-xs text-slate-400 block mb-1 flex items-center space-x-1">
+                        <Globe className="w-3 h-3 text-indigo-400" />
+                        <span>Target Network / Chain (Select to Switch)</span>
                       </span>
+                      <select
+                        value={selectedNetwork}
+                        onChange={(e) => setSelectedNetwork(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-lg px-3 py-2 text-xs font-medium text-slate-200 focus:outline-none transition-colors cursor-pointer"
+                      >
+                        <option value="Ethereum Mainnet">Ethereum Mainnet (Etherscan)</option>
+                        <option value="Arbitrum One">Arbitrum One (Arbiscan)</option>
+                        <option value="Base">Base (Basescan)</option>
+                        <option value="Polygon">Polygon (Polygonscan)</option>
+                      </select>
                     </div>
+
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">User Description</span>
                       <p className="text-slate-300 bg-slate-900/80 border border-slate-800 p-3 rounded-xl text-xs leading-relaxed">
@@ -281,7 +307,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* On-Chain Inspector with Cleanly Separated Input Box */}
+                {/* On-Chain Inspector with Standalone Test Box */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
@@ -290,15 +316,15 @@ export default function App() {
 
                   <div className="space-y-4 text-sm">
 
-                    {/* Custom Live Transaction Hash Input Box (Safely Isolated) */}
+                    {/* Standalone Live Transaction Hash Lookup Box */}
                     <div className="bg-slate-950 border border-indigo-500/40 p-3.5 rounded-xl space-y-2 shadow-inner">
                       <label className="text-xs font-bold text-indigo-400 block">
-                        Lookup Any Live Transaction Hash
+                        Test Custom TxHash on {selectedNetwork}
                       </label>
                       <div className="flex space-x-2">
                         <input
                           type="text"
-                          placeholder="Paste 0x... hash here to view live..."
+                          placeholder="Paste 0x... hash here..."
                           value={customHashInput}
                           onChange={(e) => setCustomHashInput(e.target.value)}
                           className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
@@ -307,7 +333,8 @@ export default function App() {
                           type="button"
                           onClick={() => {
                             if (customHashInput.trim()) {
-                              window.open(`https://etherscan.io/tx/${customHashInput.trim()}`, '_blank');
+                              const url = getExplorerUrl(selectedNetwork, customHashInput.trim());
+                              window.open(url, '_blank');
                             }
                           }}
                           className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 cursor-pointer flex-shrink-0"
@@ -318,12 +345,12 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Default Ticket Transaction Link */}
+                    {/* Ticket Reference Hash Link */}
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">Ticket Reference Hash (Click to Open)</span>
                       {selectedTicket.txHash !== 'N/A' ? (
                         <a
-                          href={`https://etherscan.io/tx/${selectedTicket.txHash}`}
+                          href={getExplorerUrl(selectedNetwork, selectedTicket.txHash)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-sm cursor-pointer"
