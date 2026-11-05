@@ -87,6 +87,11 @@ export default function App() {
   const [successToast, setSuccessToast] = useState(false);
   const [customHashInput, setCustomHashInput] = useState('');
 
+  // Keep track of edited error logs per ticket
+  const [editableErrorLogs, setEditableErrorLogs] = useState(
+    initialTickets.reduce((acc, t) => ({ ...acc, [t.id]: t.errorLog }), {})
+  );
+
   const filteredTickets = tickets.filter(ticket => {
     const matchesFilter = filter === 'All' || ticket.status === filter;
     const matchesSearch = ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -110,6 +115,10 @@ export default function App() {
     setAgentReply('');
     setSuccessToast(true);
     setTimeout(() => setSuccessToast(false), 3000);
+  };
+
+  const handleEditorChange = (ticketId, value) => {
+    setEditableErrorLogs(prev => ({ ...prev, [ticketId]: value }));
   };
 
   return (
@@ -273,7 +282,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* On-Chain Inspector with Isolated Custom Tester Box */}
+                {/* On-Chain Inspector with Editable Error Log */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
@@ -300,7 +309,7 @@ export default function App() {
                       )}
                     </div>
 
-                    {/* Dedicated & Isolated Custom TxHash Testing Box */}
+                    {/* Dedicated Custom TxHash Testing Box */}
                     <div className="pt-3 mt-3 border-t border-slate-800 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
                       <span className="text-xs font-semibold text-indigo-400 block mb-1">Test Any Live Transaction Hash</span>
                       <p className="text-[10px] text-slate-400 mb-2">Paste a valid 0x... hash here and click Open:</p>
@@ -328,10 +337,14 @@ export default function App() {
                     </div>
 
                     <div>
-                      <span className="text-xs text-slate-400 block mb-1">Raw Error Trace / Revert Reason</span>
-                      <div className="font-mono bg-rose-950/20 border border-rose-900/30 px-3 py-2.5 rounded-xl text-xs text-rose-300 leading-relaxed overflow-x-auto">
-                        {selectedTicket.errorLog}
-                      </div>
+                      <span className="text-xs text-slate-400 block mb-1">Editable Error Trace / Revert Reason</span>
+                      <textarea
+                        rows="3"
+                        value={editableErrorLogs[selectedTicket.id] || ''}
+                        onChange={(e) => handleEditorChange(selectedTicket.id, e.target.value)}
+                        placeholder="Type or paste any custom error log or transaction ID here..."
+                        className="w-full font-mono bg-rose-950/20 border border-rose-900/40 p-3 rounded-xl text-xs text-rose-300 leading-relaxed focus:outline-none focus:border-rose-500 resize-none"
+                      />
                     </div>
                   </div>
                 </div>
