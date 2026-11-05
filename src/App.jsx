@@ -87,7 +87,6 @@ export default function App() {
   const [successToast, setSuccessToast] = useState(false);
   const [customHashInput, setCustomHashInput] = useState('');
 
-  // Keep track of edited error logs per ticket
   const [editableErrorLogs, setEditableErrorLogs] = useState(
     initialTickets.reduce((acc, t) => ({ ...acc, [t.id]: t.errorLog }), {})
   );
@@ -282,41 +281,24 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* On-Chain Inspector with Editable Error Log */}
+                {/* On-Chain Inspector with Cleanly Separated Input Box */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
                     <Terminal className="w-4 h-4 text-rose-400" />
                     <span>On-Chain Inspector & Error Log</span>
                   </h3>
 
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <span className="text-xs text-slate-400 block mb-1">Transaction Hash (Click to Inspect on Etherscan)</span>
-                      {selectedTicket.txHash !== 'N/A' ? (
-                        <a
-                          href={`https://etherscan.io/tx/${selectedTicket.txHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-lg cursor-pointer"
-                        >
-                          <span className="truncate underline underline-offset-2 decoration-indigo-500/40">{selectedTicket.txHash}</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform ml-2 flex-shrink-0" />
-                        </a>
-                      ) : (
-                        <span className="font-mono bg-slate-950 border border-slate-800 px-3 py-2 rounded-lg text-xs text-slate-500 block">
-                          N/A (Off-chain signature request)
-                        </span>
-                      )}
-                    </div>
+                  <div className="space-y-4 text-sm">
 
-                    {/* Dedicated Custom TxHash Testing Box */}
-                    <div className="pt-3 mt-3 border-t border-slate-800 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
-                      <span className="text-xs font-semibold text-indigo-400 block mb-1">Test Any Live Transaction Hash</span>
-                      <p className="text-[10px] text-slate-400 mb-2">Paste a valid 0x... hash here and click Open:</p>
+                    {/* Custom Live Transaction Hash Input Box (Safely Isolated) */}
+                    <div className="bg-slate-950 border border-indigo-500/40 p-3.5 rounded-xl space-y-2 shadow-inner">
+                      <label className="text-xs font-bold text-indigo-400 block">
+                        Lookup Any Live Transaction Hash
+                      </label>
                       <div className="flex space-x-2">
                         <input
                           type="text"
-                          placeholder="Paste 0x... hash here"
+                          placeholder="Paste 0x... hash here to view live..."
                           value={customHashInput}
                           onChange={(e) => setCustomHashInput(e.target.value)}
                           className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
@@ -328,7 +310,7 @@ export default function App() {
                               window.open(`https://etherscan.io/tx/${customHashInput.trim()}`, '_blank');
                             }
                           }}
-                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 cursor-pointer flex-shrink-0 shadow-md"
+                          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1 cursor-pointer flex-shrink-0"
                         >
                           <span>Open</span>
                           <ExternalLink className="w-3 h-3" />
@@ -336,6 +318,27 @@ export default function App() {
                       </div>
                     </div>
 
+                    {/* Default Ticket Transaction Link */}
+                    <div>
+                      <span className="text-xs text-slate-400 block mb-1">Ticket Reference Hash (Click to Open)</span>
+                      {selectedTicket.txHash !== 'N/A' ? (
+                        <a
+                          href={`https://etherscan.io/tx/${selectedTicket.txHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between font-mono bg-slate-950 border border-slate-800 hover:border-indigo-500 px-3 py-2 rounded-lg text-xs text-indigo-300 hover:text-indigo-200 transition-all group shadow-sm cursor-pointer"
+                        >
+                          <span className="truncate underline underline-offset-2 decoration-indigo-500/40">{selectedTicket.txHash}</span>
+                          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform ml-2 flex-shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="font-mono bg-slate-950 border border-slate-800 px-3 py-2 rounded-lg text-xs text-slate-500 block">
+                          N/A (Off-chain signature request)
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Editable Error Trace */}
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">Editable Error Trace / Revert Reason</span>
                       <textarea
@@ -346,6 +349,7 @@ export default function App() {
                         className="w-full font-mono bg-rose-950/20 border border-rose-900/40 p-3 rounded-xl text-xs text-rose-300 leading-relaxed focus:outline-none focus:border-rose-500 resize-none"
                       />
                     </div>
+
                   </div>
                 </div>
               </div>
